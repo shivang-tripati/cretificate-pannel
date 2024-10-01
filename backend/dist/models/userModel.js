@@ -26,20 +26,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
 // User schema definition
 const userSchema = new mongoose_1.Schema({
-    name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
-    role: { type: String, enum: ['user', 'admin'], default: 'user' },
+    role: { type: String, enum: ['user', 'admin'], default: 'admin' },
     password: { type: String, required: true },
     tokens: [{ type: String }], // Storing auth tokens for sessions
     createdAt: { type: Date, default: Date.now },
-    updatedAt: { type: Date, default: Date.now }
 });
-// // Pre-save hook to hash passwords before saving
-// userSchema.pre<IUser>('save', async function(next) {
-//     if (!this.isModified('password')) return next();
-//     const salt = await bcrypt.genSalt(10);
-//     this.password = await bcrypt.hash(this.password, salt);
-//     next();
-// });
 const User = mongoose_1.default.model('User', userSchema);
 exports.default = User;

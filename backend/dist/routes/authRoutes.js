@@ -2,8 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const authController_1 = require("../controllers/authController");
+const authMiddleware_1 = require("../middlewares/authMiddleware");
 const router = (0, express_1.Router)();
-console.log('Auth routes loaded');
 /**
  * @swagger
  * /api/auth/register:
@@ -18,18 +18,17 @@ console.log('Auth routes loaded');
  *           schema:
  *             type: object
  *             required:
- *               - name
  *               - email
  *               - password
- *               - role
+ *               - confirmPassword
  *             properties:
- *               name:
- *                 type: string
- *                 example: John Doe
  *               email:
  *                 type: string
  *                 example: 8kCZ3@example.com
  *               password:
+ *                 type: string
+ *                 example: 123456
+ *               confirmPassword:
  *                 type: string
  *                 example: 123456
  *               role:
@@ -70,6 +69,52 @@ router.post('/register', authController_1.register);
  *         description: User logged in successfully
  *       400:
  *         description: Bad request (invalid credentials)
+ *     parameters:
+ *       - in: header
+ *         name: Authorization
+ *         description: Bearer token for authentication
+ *         required: false
+ *         schema:
+ *           type: string
+ *           example: Bearer <JWT_token>
  */
 router.post('/login', authController_1.login);
+/**
+ * @swagger
+ * /api/auth/logout:
+ *   post:
+ *     summary: Logout from current device
+ *     tags: [Auth]
+ *     parameters:
+ *       - in: cookie
+ *         name: Authorization
+ *         description: auth_toaken required for logging out
+ *         required: true
+ *         schema:
+ *           type: string
+ *           example: auth_toaken <JWT_token>
+ *     responses:
+ *       200:
+ *         description: User logged out from current device successfully
+ */
+router.post('/logout', authMiddleware_1.authMiddleware, authController_1.logout);
+/**
+ * @swagger
+ * /api/auth/logout-all:
+ *   post:
+ *     summary: Logout from all device
+ *     tags: [Auth]
+ *     parameters:
+ *       - in: cookie
+ *         name: Authorization
+ *         description: auth_toaken required for logging out
+ *         required: true
+ *         schema:
+ *           type: string
+ *           example: auth_toaken <JWT_token>
+ *     responses:
+ *       200:
+ *         description: User logged out from all devices successfully
+ */
+router.post('/logout-all', authMiddleware_1.authMiddleware, authController_1.logoutFromAllDevices);
 exports.default = router;

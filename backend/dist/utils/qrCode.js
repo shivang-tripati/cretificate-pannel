@@ -16,10 +16,11 @@ exports.generateQRCode = void 0;
 const qrcode_1 = __importDefault(require("qrcode"));
 const generateQRCode = (url) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const qrCodeUrl = yield qrcode_1.default.toDataURL(url); // This generates a QR code as a data URL
+        const qrCodeUrl = yield qrcode_1.default.toDataURL(url); // Generate a QR code as a data URL
         return qrCodeUrl;
     }
     catch (error) {
+        console.error('Error generating QR code:', error);
         throw new Error('Error generating QR code');
     }
 });

@@ -1,14 +1,9 @@
 
 import Certificate, {ICertificate} from '../models/certificateModel';
-import { generateQRCode } from '../utils/qrCode'; 
-import { uploadCertificatePdf, deleteCertificatePdf } from './s3Service';
-
-import { v4 as uuidv4 } from 'uuid';
+import {deleteCertificatePdf } from './s3Service';
 
 require('dotenv').config();
 
-const BUCKET_NAME = process.env.AWS_BUCKET_NAME!
-const certificateId = uuidv4();
 const extractPath = (url: string): string => {
   const pathStart = url.indexOf('__certificates');
   if (pathStart !== -1) {

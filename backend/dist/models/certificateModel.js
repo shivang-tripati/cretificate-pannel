@@ -25,20 +25,21 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
 const certificateSchema = new mongoose_1.Schema({
-    certtificateId: { type: String, required: true },
+    certificateId: { type: String, required: true }, // Corrected typo
     title: { type: String, required: true },
-    description: { type: String },
-    date: { type: Date, default: Date.now },
-    qrCodeUrl: { type: String, required: true },
-    pdfUrl: { type: String, required: true },
-    status: { type: Boolean, default: true }, // True for valid, false for invalid
-    createdBy: { type: mongoose_1.default.Types.ObjectId, ref: 'User', required: true },
+    description: { type: String }, // Optional field for certificate description
+    date: { type: Date, default: Date.now }, // Date of issuance
+    qrCodeUrl: { type: String, required: true }, // URL to the generated QR code
+    s3Url: { type: String, required: true }, // URL to the uploaded PDF
+    status: { type: String, default: 'vaild' }, // True for valid, false for invalid
+    createdBy: { type: mongoose_1.default.Types.ObjectId, ref: 'User', required: true }, // Creator reference
     updatedBy: [
         {
-            userId: { type: mongoose_1.default.Types.ObjectId, ref: 'User' },
-            updatedAt: { type: Date, default: Date.now },
+            userId: { type: mongoose_1.default.Types.ObjectId, ref: 'User' }, // Reference to the user who updated
+            updatedAt: { type: Date, default: Date.now }, // Time of update
         },
     ],
-}, { timestamps: true });
+}, { timestamps: true } // Automatically adds createdAt and updatedAt fields
+);
 const Certificate = mongoose_1.default.model('Certificate', certificateSchema);
 exports.default = Certificate;

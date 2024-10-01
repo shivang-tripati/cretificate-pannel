@@ -1,8 +1,6 @@
 import s3Client from '../config/s3';
 import { PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
-import { ObjectCannedACL } from '@aws-sdk/client-s3';
-import { Readable } from 'stream';
-import { v4 as uuidv4 } from 'uuid';
+
 
 require('dotenv').config();
 

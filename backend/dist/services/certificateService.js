@@ -12,11 +12,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createCertificate = exports.deleteCertificate = exports.updateCertificate = exports.getCertificateById = void 0;
+exports.getAllCertificates = exports.createCertificate = exports.deleteCertificate = exports.updateCertificate = exports.getCertificateById = void 0;
 const certificateModel_1 = __importDefault(require("../models/certificateModel"));
-const qrCode_1 = require("../utils/qrCode");
 const s3Service_1 = require("./s3Service");
 const uuid_1 = require("uuid");
+require('dotenv').config();
 const BUCKET_NAME = process.env.AWS_BUCKET_NAME;
 const certificateId = (0, uuid_1.v4)();
 const extractPath = (url) => {
@@ -27,25 +27,29 @@ const extractPath = (url) => {
     return ''; // return empty if "__certificates" is not found
 };
 const createCertificate = (data) => __awaiter(void 0, void 0, void 0, function* () {
-    (0, s3Service_1.uploadCertificatePdf)(data.file, data.userId);
-    const certificateData = Object.assign(Object.assign({}, data), { certificateId: certificateId, qrCodeUrl: yield (0, qrCode_1.generateQRCode)(`https://certificate-pannel.vercel.app/certificate/${data.id}`), pdfUrl: `https://certificate-pannel.s3.amazonaws.com/${BUCKET_NAME}/__certificates/${data.userId}/${data.file.name}.pdf` });
+    const certificateData = Object.assign({}, data);
     const certificate = yield certificateModel_1.default.create(certificateData);
     return certificate;
 });
 exports.createCertificate = createCertificate;
 const getCertificateById = (id) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const certificate = yield certificateModel_1.default.findById(id);
+        const certificate = yield certificateModel_1.default.findOne({ certificateId: id });
+        console.log(certificate);
         return certificate;
     }
     catch (error) {
-        console.log(error);
+        console.error('Error fetching certificate:', error);
         throw new Error('Certificate not found');
     }
 });
 exports.getCertificateById = getCertificateById;
 const updateCertificate = (id, data) => __awaiter(void 0, void 0, void 0, function* () {
-    return certificateModel_1.default.findByIdAndUpdate(id, data, { new: true });
+    const certificate = yield getCertificateById(id);
+    if (!certificate) {
+        throw new Error('Certificate not found');
+    }
+    return certificateModel_1.default.findByIdAndUpdate(certificate === null || certificate === void 0 ? void 0 : certificate._id, data, { new: true });
 });
 exports.updateCertificate = updateCertificate;
 const deleteCertificate = (id) => __awaiter(void 0, void 0, void 0, function* () {
@@ -54,13 +58,26 @@ const deleteCertificate = (id) => __awaiter(void 0, void 0, void 0, function* ()
         if (!certificate) {
             throw new Error('Certificate not found');
         }
-        yield certificateModel_1.default.findByIdAndDelete(id);
-        const pdfUrl = certificate.pdfUrl;
+        yield certificateModel_1.default.findByIdAndDelete(certificate._id);
+        const pdfUrl = certificate.s3Url;
         const pdfKey = extractPath(pdfUrl);
         console.log(pdfKey);
         yield (0, s3Service_1.deleteCertificatePdf)(pdfKey);
+        return true;
     }
     catch (error) {
+        return false;
     }
 });
 exports.deleteCertificate = deleteCertificate;
+const getAllCertificates = () => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const certificates = yield certificateModel_1.default.find();
+        return certificates;
+    }
+    catch (error) {
+        console.error('Error fetching certificates:', error);
+        throw new Error('Error fetching certificates');
+    }
+});
+exports.getAllCertificates = getAllCertificates;

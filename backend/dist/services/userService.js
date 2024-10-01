@@ -29,13 +29,13 @@ exports.registerUser = registerUser;
 const authenticateUser = (email, password) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield userModel_1.default.findOne({ email });
     if (!user) {
-        return { isMatch: false, message: 'User not found' };
+        return { isMatch: false, message: "User not found" };
     }
     const isMatch = yield (0, bcypt_1.comparePassword)(password, user.password);
     if (!isMatch) {
-        return { isMatch: false, message: 'Incorrect password' };
+        return { isMatch: false, message: "Incorrect password" };
     }
-    return user;
+    return { user };
 });
 exports.authenticateUser = authenticateUser;
 const getUserById = (id) => __awaiter(void 0, void 0, void 0, function* () {

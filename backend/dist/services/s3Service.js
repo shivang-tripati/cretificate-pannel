@@ -12,42 +12,46 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.uploadCertificatePdf = uploadCertificatePdf;
-exports.deleteCertificatePdf = deleteCertificatePdf;
+exports.deleteCertificatePdf = exports.uploadCertificatePdf = void 0;
 const s3_1 = __importDefault(require("../config/s3"));
-const dotenv_1 = __importDefault(require("dotenv"));
 const client_s3_1 = require("@aws-sdk/client-s3");
-dotenv_1.default.config();
-function uploadCertificatePdf(file, userId) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const command = new client_s3_1.PutObjectCommand({
-            Bucket: 'plypicker-certificate',
-            Key: `__certificates/${userId}/${file.name}.pdf`,
-            Body: file,
-            ContentType: file.type || 'application/pdf',
-            ACL: 'bucket-owner-read'
-        });
-        try {
-            yield s3_1.default.send(command);
-            console.log(`${file.name} File uploaded successfully.`);
-        }
-        catch (error) {
-            console.error(`Error uploading file : ${error.message}`);
-        }
+require('dotenv').config();
+const BUCKET_NAME = process.env.AWS_BUCKET_NAME;
+// Upload PDF to S3
+const uploadCertificatePdf = (fileBuffer, fileName, userId, certificateId) => __awaiter(void 0, void 0, void 0, function* () {
+    const fileKey = `__certificates/${userId}/${fileName}_${certificateId}.pdf`;
+    const uploadParams = {
+        Bucket: BUCKET_NAME,
+        Key: fileKey,
+        Body: fileBuffer,
+        ContentType: 'application/pdf',
+    };
+    const command = new client_s3_1.PutObjectCommand(uploadParams);
+    try {
+        const responses = yield s3_1.default.send(command);
+        console.log(`File uploaded successfully: ${fileKey}`);
+        console.log(`Response: ${JSON.stringify(responses)}`);
+        return fileKey; // Return file path for storage in DB
+    }
+    catch (error) {
+        console.error(`Error uploading file: ${error.message}`);
+        throw new Error(`S3 upload failed: ${error.message}`);
+    }
+});
+exports.uploadCertificatePdf = uploadCertificatePdf;
+// Delete PDF from S3
+const deleteCertificatePdf = (pdfKey) => __awaiter(void 0, void 0, void 0, function* () {
+    const command = new client_s3_1.DeleteObjectCommand({
+        Bucket: BUCKET_NAME,
+        Key: pdfKey,
     });
-}
-function deleteCertificatePdf(pdfKey) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const command = new client_s3_1.DeleteObjectCommand({
-            Bucket: 'plypicker-certificate',
-            Key: `__certificates/${pdfKey}`,
-        });
-        try {
-            yield s3_1.default.send(command);
-            console.log(`${pdfKey} File deleted successfully.`);
-        }
-        catch (error) {
-            console.error(`Error deleting file : ${error.message}`);
-        }
-    });
-}
+    try {
+        yield s3_1.default.send(command);
+        console.log(`File deleted successfully: ${pdfKey}`);
+    }
+    catch (error) {
+        console.error(`Error deleting file: ${error.message}`);
+        throw new Error(`S3 delete failed: ${error.message}`);
+    }
+});
+exports.deleteCertificatePdf = deleteCertificatePdf;
