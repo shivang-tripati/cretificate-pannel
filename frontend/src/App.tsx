@@ -12,7 +12,7 @@ import CertificateVerificationPage from "./pages/user/CertificateVerification";
 import HomePage from "./components/ui/HomePage";
 
 const App: React.FC = () => {
-  const { user, isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuth();
 
   return (
     <AuthProvider>
