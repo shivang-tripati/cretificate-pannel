@@ -15,10 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getAllCertificates = exports.createCertificate = exports.deleteCertificate = exports.updateCertificate = exports.getCertificateById = void 0;
 const certificateModel_1 = __importDefault(require("../models/certificateModel"));
 const s3Service_1 = require("./s3Service");
-const uuid_1 = require("uuid");
 require('dotenv').config();
-const BUCKET_NAME = process.env.AWS_BUCKET_NAME;
-const certificateId = (0, uuid_1.v4)();
 const extractPath = (url) => {
     const pathStart = url.indexOf('__certificates');
     if (pathStart !== -1) {
