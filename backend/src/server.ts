@@ -49,20 +49,15 @@ setUpSwagger(app);
 // Connect to Database
 connectDB();
 
-
-
-// Handle preflight requests explicitly
-app.options('*', cors({
-  origin: 'https://cretificate-pannel.vercel.app/',
-  credentials: true
-}));
-
-// Enable CORS
-app.use('*' ,cors({
+// CORS Configuration
+const corsOptions = {
     origin: 'https://cretificate-pannel.vercel.app',
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    credentials: true
-  }));
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Ensure OPTIONS is included
+    credentials: true,
+};
+
+// Enable CORS with defined options
+app.use(cors(corsOptions));
 
 // Middleware
 app.use(morgan('dev')); // Logging
@@ -71,6 +66,12 @@ app.use(express.json()); // Parse JSON bodies
 app.use(express.urlencoded({ extended: true })); // Parse form-encoded data
 
 // Routes
+app.use('/api/test', (req, res) => {
+    res.json({
+        message: 'API is working',
+        time: new Date().toLocaleTimeString(),
+    });
+});
 app.use('/api/auth', authRoutes); 
 app.use('/api/users', userRoutes);
 app.use('/api/certificates', certificateRoutes);
