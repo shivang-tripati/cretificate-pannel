@@ -5,7 +5,7 @@ import { useState } from "react";
 
 const LoginForm: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
-  const { login } = useAuth();
+  const { login, isAuthenticated, user } = useAuth();
   const navigate = useNavigate();
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -20,9 +20,12 @@ const LoginForm: React.FC = () => {
         // You might want to show an error message to the user here
         return;
       }
-
+      console.log(isAuthenticated, user);
       const response = await login(email, password);
-      navigate("/admin/dashboard");
+      console.log(isAuthenticated, user);
+      if (user) {
+        navigate("/admin/dashboard");
+      }
       console.log("response", response);
     } catch (error) {
       console.error("Login error:", error);
