@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'https://cretificate-pannel-production.up.railway.app/';
+const API_BASE_URL = 'https://cretificate-pannel-production.up.railway.app/';
 
 export const api = axios.create({
     baseURL: API_BASE_URL,
@@ -8,11 +8,13 @@ export const api = axios.create({
 });
 
 // Authentication API calls
-export const login = async (email: string, password: string) => {
+export const login = async (email: string, password: string):Promise<{data: any, status: number}> => {
     try {
         const response = await api.post('api/auth/login', { email, password });
-        console.log("login response", response);
-        return response;
+        console.log("login response", response.data);
+        return {
+            data: response.data,
+            status: response.status};
     } catch (error) {
         if (axios.isAxiosError(error) && error.response) {
             console.error('Login failed:', error.response.data);

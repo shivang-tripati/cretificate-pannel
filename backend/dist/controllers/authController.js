@@ -67,6 +67,7 @@ const login = (req, res, next) => __awaiter(void 0, void 0, void 0, function* ()
             const token = (0, jwt_1.generateToken)({ id: user._id, role: user.role });
             user === null || user === void 0 ? void 0 : user.tokens.push(token);
             yield user.save();
+            console.log("User:", user);
             // Set the token in an HTTP-only cookie
             res.cookie('auth_token', token, {
                 httpOnly: true,

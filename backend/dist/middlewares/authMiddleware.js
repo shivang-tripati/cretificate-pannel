@@ -20,6 +20,9 @@ const userModel_1 = __importDefault(require("../models/userModel"));
 dotenv_1.default.config();
 const authMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const token = req.cookies.auth_token;
+    console.log('Token: authMiddleware', token);
+    const decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
+    console.log('Decoded token:', decoded);
     if (!token) {
         return res.status(401).json({ message: 'Authorization token missing or malformed' });
     }

@@ -65,6 +65,7 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
           const token = generateToken({ id: user._id, role: user.role });
           user?.tokens.push(token);
           await user.save();
+          console.log("User:", user);
 
           // Set the token in an HTTP-only cookie
           res.cookie('auth_token', token, {

@@ -27,7 +27,7 @@ const options: swaggerJsDoc.Options = {
         },
         servers: [
             {
-                url: 'http://localhost:5000',
+                url: 'https://cretificate-pannel-production.up.railway.app/',
             },
         ],
     },
@@ -53,13 +53,13 @@ connectDB();
 
 // Handle preflight requests explicitly
 app.options('*', cors({
-  origin: 'http://localhost:3000',
+  origin: [ 'https://cretificate-pannel.vercel.app/' , 'http://localhost:3000' ],
   credentials: true
 }));
 
 // Enable CORS
 app.use('*' ,cors({
-    origin: 'http://localhost:3000',
+    origin: [ 'https://cretificate-pannel.vercel.app/' , 'http://localhost:3000' ],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true
   }));

@@ -15,6 +15,9 @@ interface AuthRequest extends Request {
 const authMiddleware = async(req: AuthRequest, res: Response, next: NextFunction) => {
 
     const token = req.cookies.auth_token;
+    console.log('Token: authMiddleware', token);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
+        console.log('Decoded token:', decoded);
 
     if (!token) {
         return res.status(401).json({ message: 'Authorization token missing or malformed' });

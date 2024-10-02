@@ -29,7 +29,7 @@ const options = {
         },
         servers: [
             {
-                url: 'http://localhost:5000',
+                url: 'https://cretificate-pannel-production.up.railway.app/',
             },
         ],
     },
@@ -48,12 +48,12 @@ setUpSwagger(app);
 (0, db_1.default)();
 // Handle preflight requests explicitly
 app.options('*', (0, cors_1.default)({
-    origin: 'http://localhost:3000',
+    origin: ['https://cretificate-pannel.vercel.app/', 'http://localhost:3000'],
     credentials: true
 }));
 // Enable CORS
 app.use('*', (0, cors_1.default)({
-    origin: 'http://localhost:3000',
+    origin: ['https://cretificate-pannel.vercel.app/', 'http://localhost:3000'],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true
 }));
