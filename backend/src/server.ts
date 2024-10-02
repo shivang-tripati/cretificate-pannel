@@ -53,13 +53,13 @@ connectDB();
 
 // Handle preflight requests explicitly
 app.options('*', cors({
-  origin: [ 'https://cretificate-pannel.vercel.app/' , 'http://localhost:3000' ],
+  origin: 'https://cretificate-pannel.vercel.app/',
   credentials: true
 }));
 
 // Enable CORS
 app.use('*' ,cors({
-    origin: [ 'https://cretificate-pannel.vercel.app/' , 'http://localhost:3000' ],
+    origin: 'https://cretificate-pannel.vercel.app',
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true
   }));
